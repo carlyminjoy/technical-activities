@@ -1,19 +1,49 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="treat-header">
+      <h1>Tasty treats</h1>
+      <Search v-model="searchVal" />
+    </div>
+    <BakedTreats :treats="filteredTreats" />
+    <NewTreatForm @newTreat="addNewTreat" />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import NewTreatForm from "./components/NewTreatForm";
+import Search from "./components/Search";
+import BakedTreats from "./components/BakedTreats.vue";
+import { default as treats } from "../baked-treats.json";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    BakedTreats,
+    Search,
+    NewTreatForm,
+  },
+  data() {
+    return {
+      treats: treats,
+      searchVal: "",
+    };
+  },
+  computed: {
+    filteredTreats() {
+      return this.treats.filter((treat) => {
+        return [treat.id, treat.type, treat.name, treat.topping]
+          .join("")
+          .toLowerCase()
+          .includes(this.searchVal.toLowerCase());
+      });
+    },
+  },
+  methods: {
+    addNewTreat(treat) {
+      this.treats.push(treat);
+    },
+  },
+};
 </script>
 
 <style>
@@ -22,7 +52,17 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #0a122a;
+  margin: 2rem auto;
+  padding: 0 80px;
+}
+.treat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+h1 {
+  font-weight: 900;
 }
 </style>
